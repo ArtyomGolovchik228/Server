@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Game Auth System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --warning-color: #f8961e;
+            --dark-color: #2b2d42;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            color: white;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            margin: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            padding: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .stat-card.danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-card .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            opacity: 0.8;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: relative;
+            height: 300px;
+        }
+        
+        .chart-container canvas {
+            max-height: 260px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar d-md-block">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold">Game Auth</h3>
+                        <p class="text-light opacity-75">Admin Panel</p>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/users_management">
+                                <i class="bi bi-people me-2"></i>
+                                Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/logs">
+                                <i class="bi bi-journal-text me-2"></i>
+                                Logs
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <a class="nav-link text-danger" href="/admin/logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-5">
+                        <div class="text-light opacity-75 small">
+                            <p>Server Status: <span class="text-success">● Online</span></p>
+                            <p>Users Online: <span id="onlineUsers">0</span></p>
+                            <p>Response Time: <span id="responseTime">0ms</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto px-0">
+                <!-- Header -->
+                <div class="header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold mb-0">Dashboard</h4>
+                            <p class="text-muted mb-0">Welcome back, {{ user.username }}</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-2">
+                                {{ user.username[0] }}
+                            </div>
+                            <div>
+                                <strong>{{ user.username }}</strong>
+                                <div class="small text-muted">Administrator</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistics Cards -->
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="stat-value" id="totalUsers">0</div>
+                                    <div class="stat-label">Total Users</div>
+                                </div>
+                                <i class="bi bi-people-fill stat-icon"></i>
+                            </div>
+                            <div class="mt-3">
+                                <small class="text-success" id="newUsers">
+                                    <i class="bi bi-arrow-up"></i> 0 new today
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="stat-card success">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="stat-value" id="activeUsers">0</div>
+                                    <div class="stat-label">Active Users</div>
+                                </div>
+                                <i class="bi bi-check-circle-fill stat-icon"></i>
+                            </div>
+                            <div class="mt-3">
+                                <small class="text-muted" id="activePercent">
+                                    0% of total
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="stat-card warning">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="stat-value" id="totalLogins">0</div>
+                                    <div class="stat-label">Total Logins</div>
+                                </div>
+                                <i class="bi bi-door-open-fill stat-icon"></i>
+                            </div>
+                            <div class="mt-3">
+                                <small class="text-muted" id="todayLogins">
+                                    0 today
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="stat-card danger">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="stat-value" id="failedLogins">0</div>
+                                    <div class="stat-label">Failed Logins</div>
+                                </div>
+                                <i class="bi bi-exclamation-triangle-fill stat-icon"></i>
+                            </div>
+                            <div class="mt-3">
+                                <small class="text-muted" id="failRate">
+                                    0% failure rate
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts -->
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <div class="chart-container">
+                            <h6>Login Activity (Last 7 Days)</h6>
+                            <canvas id="loginChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="chart-container">
+                            <h6>Login Success Rate</h6>
+                            <canvas id="successChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="table-container">
+                            <h6>Recent Login Attempts</h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="recentLogins">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>IP Address</th>
+                                            <th>Status</th>
+                                            <th>Time</th>
+                                            <th>User Agent</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data loaded via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-end">
+                                <a href="/admin/logs" class="btn btn-sm btn-outline-primary">
+                                    View All Logs
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- API Stats -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="table-container">
+                            <h6>API Endpoint Usage</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm" id="apiStats">
+                                    <thead>
+                                        <tr>
+                                            <th>Endpoint</th>
+                                            <th>Requests</th>
+                                            <th>Avg Time</th>
+                                            <th>Errors</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data loaded via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="table-container">
+                            <h6>System Information</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <small class="text-muted">Server Time</small>
+                                        <div class="fw-bold" id="serverTime">--:--:--</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <small class="text-muted">Uptime</small>
+                                        <div class="fw-bold" id="uptime">0 days</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <small class="text-muted">API Requests</small>
+                                        <div class="fw-bold" id="totalRequests">0</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <small class="text-muted">Avg Response Time</small>
+                                        <div class="fw-bold" id="avgResponseTime">0ms</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning small mt-3">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Rate limiting: 5 login attempts per 5 minutes per IP
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Dashboard JavaScript
+        let loginChart, successChart;
+        let startTime = new Date();
+        
+        // Helper function to make authenticated fetch requests
+        // Cookie будет отправлен автоматически браузером (credentials: 'include')
+        async function authenticatedFetch(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    credentials: 'include', // Важно: отправляет cookies автоматически
+                    headers: {
+                        ...options.headers
+                    }
+                });
+                
+                if (!response.ok) {
+                    console.error(`Request failed: ${url}`, {
+                        status: response.status,
+                        statusText: response.statusText
+                    });
+                    
+                    if (response.status === 401) {
+                        console.error('Unauthorized (401), cookie may be missing or invalid');
+                        // Задержка для просмотра ошибки
+                        setTimeout(() => {
+                            window.location.href = '/admin/login';
+                        }, 5000);
+                        return null;
+                    }
+                    
+                    // Пытаемся получить текст ошибки
+                    try {
+                        const errorText = await response.text();
+                        console.error('Error response:', errorText);
+                    } catch (e) {
+                        console.error('Could not read error response');
+                    }
+                }
+                
+                return response;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                console.error('URL:', url);
+                // Задержка для просмотра ошибки
+                setTimeout(() => {
+                    if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+                        window.location.href = '/admin/login';
+                    }
+                }, 5000);
+                throw error;
+            }
+        }
+        
+        // Update server time
+        function updateServerTime() {
+            const now = new Date();
+            document.getElementById('serverTime').textContent = 
+                now.toLocaleTimeString();
+            
+            const uptime = Math.floor((now - startTime) / 1000);
+            const days = Math.floor(uptime / 86400);
+            const hours = Math.floor((uptime % 86400) / 3600);
+            const minutes = Math.floor((uptime % 3600) / 60);
+            document.getElementById('uptime').textContent = 
+                `${days}d ${hours}h ${minutes}m`;
+        }
+        
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                console.log('Loading dashboard data...');
+                const response = await authenticatedFetch('/admin/stats');
+                if (!response) {
+                    console.error('No response from authenticatedFetch');
+                    return;
+                }
+                
+                console.log('Response received:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        console.error('Unauthorized (401), redirecting to login in 5 seconds');
+                        setTimeout(() => {
+                            window.location.href = '/admin/login';
+                        }, 5000);
+                        return;
+                    }
+                    console.error('Failed to load stats:', response.status, response.statusText);
+                    const errorText = await response.text();
+                    console.error('Error details:', errorText);
+                    throw new Error(`Failed to load stats: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Dashboard data loaded successfully');
+                
+                // Update stats cards
+                document.getElementById('totalUsers').textContent = data.total_users;
+                document.getElementById('activeUsers').textContent = data.active_users;
+                document.getElementById('totalLogins').textContent = data.total_logins;
+                document.getElementById('failedLogins').textContent = data.failed_logins;
+                document.getElementById('totalRequests').textContent = data.total_api_calls;
+                document.getElementById('avgResponseTime').textContent = 
+                    Math.round(data.avg_response_time * 1000) + 'ms';
+                
+                // Calculate percentages
+                const activePercent = data.total_users > 0 ? 
+                    Math.round((data.active_users / data.total_users) * 100) : 0;
+                const failRate = data.total_logins > 0 ? 
+                    Math.round((data.failed_logins / data.total_logins) * 100) : 0;
+                
+                document.getElementById('activePercent').textContent = 
+                    `${activePercent}% of total`;
+                document.getElementById('failRate').textContent = 
+                    `${failRate}% failure rate`;
+                
+                // Load recent logins
+                await loadRecentLogins();
+                
+                // Load API stats
+                await loadApiStats();
+                
+                // Update charts
+                updateCharts(data);
+                
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+                console.error('Error stack:', error.stack);
+                // Показываем ошибку на странице
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger';
+                errorDiv.style.position = 'fixed';
+                errorDiv.style.top = '10px';
+                errorDiv.style.right = '10px';
+                errorDiv.style.zIndex = '9999';
+                errorDiv.style.maxWidth = '500px';
+                errorDiv.innerHTML = `
+                    <strong>Ошибка загрузки данных:</strong><br>
+                    ${error.message}<br>
+                    <small>Проверьте консоль для деталей. Страница будет перезагружена через 10 секунд.</small>
+                `;
+                document.body.appendChild(errorDiv);
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 10000);
+            }
+        }
+        
+        // Load recent logins
+        async function loadRecentLogins() {
+            try {
+                const response = await authenticatedFetch('/admin/logs/login?limit=10');
+                if (!response) {
+                    // authenticatedFetch уже сделал редирект
+                    return;
+                }
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        console.error('Unauthorized, redirecting to login');
+                        window.location.href = '/admin/login';
+                        return;
+                    }
+                    console.error('Failed to load recent logins:', response.status);
+                    throw new Error('Failed to load recent logins');
+                }
+                const logs = await response.json();
+                
+                const tbody = document.querySelector('#recentLogins tbody');
+                tbody.innerHTML = '';
+                
+                logs.forEach(log => {
+                    const row = document.createElement('tr');
+                    const time = new Date(log.attempt_time).toLocaleString();
+                    
+                    row.innerHTML = `
+                        <td>
+                            <strong>${log.username}</strong><br>
+                            <small class="text-muted">${log.user_code}</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">${log.ip_address}</span>
+                        </td>
+                        <td>
+                            <span class="badge ${log.success ? 'bg-success' : 'bg-danger'}">
+                                ${log.success ? 'Success' : 'Failed'}
+                            </span>
+                        </td>
+                        <td>
+                            <small>${time}</small>
+                        </td>
+                        <td>
+                            <small class="text-truncate d-block" style="max-width: 200px;">
+                                ${log.user_agent || 'N/A'}
+                            </small>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Failed to load recent logins:', error);
+            }
+        }
+        
+        // Load API stats
+        async function loadApiStats() {
+            try {
+                const response = await authenticatedFetch('/admin/logs/api?limit=100');
+                if (!response) {
+                    // authenticatedFetch уже сделал редирект
+                    return;
+                }
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        console.error('Unauthorized, redirecting to login');
+                        window.location.href = '/admin/login';
+                        return;
+                    }
+                    console.error('Failed to load API stats:', response.status);
+                    throw new Error('Failed to load API stats');
+                }
+                const logs = await response.json();
+                
+                // Group by endpoint
+                const endpointStats = {};
+                logs.forEach(log => {
+                    if (!endpointStats[log.endpoint]) {
+                        endpointStats[log.endpoint] = {
+                            requests: 0,
+                            totalTime: 0,
+                            errors: 0
+                        };
+                    }
+                    
+                    endpointStats[log.endpoint].requests++;
+                    endpointStats[log.endpoint].totalTime += log.response_time;
+                    
+                    if (log.response_status >= 400) {
+                        endpointStats[log.endpoint].errors++;
+                    }
+                });
+                
+                // Update table
+                const tbody = document.querySelector('#apiStats tbody');
+                tbody.innerHTML = '';
+                
+                Object.entries(endpointStats).forEach(([endpoint, stats]) => {
+                    const avgTime = (stats.totalTime / stats.requests) * 1000;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><small>${endpoint}</small></td>
+                        <td><span class="badge bg-primary">${stats.requests}</span></td>
+                        <td><span class="badge bg-info">${avgTime.toFixed(0)}ms</span></td>
+                        <td><span class="badge bg-danger">${stats.errors}</span></td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Failed to load API stats:', error);
+            }
+        }
+        
+        // Update charts
+        function updateCharts(data) {
+            // Login activity chart
+            const loginCtx = document.getElementById('loginChart').getContext('2d');
+            
+            if (loginChart) {
+                loginChart.destroy();
+            }
+            
+            // Sample data - in production, fetch real time series
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const successData = [65, 59, 80, 81, 56, 55, 40];
+            const failData = [28, 48, 40, 19, 86, 27, 90];
+            
+            loginChart = new Chart(loginCtx, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [
+                        {
+                            label: 'Successful Logins',
+                            data: successData,
+                            borderColor: '#4cc9f0',
+                            backgroundColor: 'rgba(76, 201, 240, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Failed Logins',
+                            data: failData,
+                            borderColor: '#f72585',
+                            backgroundColor: 'rgba(247, 37, 133, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Success rate chart
+            const successCtx = document.getElementById('successChart').getContext('2d');
+            
+            if (successChart) {
+                successChart.destroy();
+            }
+            
+            const successRate = data.total_logins > 0 ? 
+                Math.round((data.successful_logins / data.total_logins) * 100) : 0;
+            
+            successChart = new Chart(successCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Successful', 'Failed'],
+                    datasets: [{
+                        data: [successRate, 100 - successRate],
+                        backgroundColor: [
+                            '#4cc9f0',
+                            '#f72585'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Poll for updates
+        setInterval(loadDashboardData, 30000); // Every 30 seconds
+        setInterval(updateServerTime, 1000);
+        
+        // Initial load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Dashboard page loaded');
+            console.log('Cookies (visible):', document.cookie);
+            console.log('Note: httponly cookies are not visible to JavaScript but will be sent automatically');
+            
+            // Небольшая задержка перед загрузкой данных
+            setTimeout(() => {
+                loadDashboardData();
+                updateServerTime();
+            }, 100);
+        });
+        
+        // Logout function
+        function logout() {
+            document.cookie = "admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/admin/login";
+        }
+    </script>
+</body>
+</html>

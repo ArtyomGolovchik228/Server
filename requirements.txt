@@ -1,0 +1,16 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+sqlalchemy==1.4.51
+psycopg2-binary==2.9.9
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.3.0
+python-multipart==0.0.6
+python-dotenv==1.0.0
+redis==4.6.0
+ipaddress==1.0.23
+aiofiles==23.2.1
+alembic==1.12.1
+pydantic==1.10.13
+jinja2==3.1.4
+email-validator==2.2.0
+bcrypt==4.0.1

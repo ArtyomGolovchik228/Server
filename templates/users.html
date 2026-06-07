@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Management - Game Auth System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        /* Same sidebar styles as dashboard */
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, #4361ee, #3a0ca3);
+            min-height: 100vh;
+            color: white;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            margin: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4361ee;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .badge-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .badge-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge-admin {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        
+        .search-box {
+            max-width: 300px;
+        }
+        
+        .action-buttons .btn {
+            padding: 5px 10px;
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar (same as dashboard) -->
+            <div class="col-md-3 col-lg-2 sidebar d-md-block">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold">Game Auth</h3>
+                        <p class="text-light opacity-75">Admin Panel</p>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/users_management">
+                                <i class="bi bi-people me-2"></i>
+                                Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/logs">
+                                <i class="bi bi-journal-text me-2"></i>
+                                Logs
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <a class="nav-link text-danger" href="#" onclick="logout()">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto px-0">
+                <!-- Header -->
+                <div class="header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold mb-0">Users Management</h4>
+                            <p class="text-muted mb-0">Manage all registered users</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-2">
+                                {{ user.username[0] }}
+                            </div>
+                            <div>
+                                <strong>{{ user.username }}</strong>
+                                <div class="small text-muted">Administrator</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controls -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="d-flex gap-2">
+                            <input type="text" class="form-control search-box" 
+                                   placeholder="Search users..." id="searchInput">
+                            <select class="form-select w-auto" id="statusFilter">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="admin">Admin</option>
+                                <option value="franchise">Franchise</option>
+                                <option value="player">Player</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="refreshUsers()">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                            <i class="bi bi-plus-circle me-2"></i>Create New User
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Users Table -->
+                <div class="table-container">
+                    <table class="table table-hover" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User Code</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role/Status</th>
+                                <th>Game Stats</th>
+                                <th>Levels</th>
+                                <th>Points</th>
+                                <th>Created</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users loaded via JavaScript -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted" id="userCount">Loading...</div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0" id="pagination">
+                                <!-- Pagination loaded via JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create User Modal -->
+    <div class="modal fade" id="createUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createUserForm">
+                        <div class="mb-3">
+                            <label class="form-label">Username *</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone *</label>
+                            <input type="tel" class="form-control" name="phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email (Optional)</label>
+                            <input type="email" class="form-control" name="email">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password">
+                            <small class="text-muted">Leave empty to auto-generate code-only access</small>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Current Level</label>
+                                <input type="number" class="form-control" name="current_level" value="0" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Coins</label>
+                                <input type="number" class="form-control" name="coins" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Experience</label>
+                                <input type="number" class="form-control" name="experience" value="0" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Play Time (seconds)</label>
+                                <input type="number" class="form-control" name="total_play_time" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Passed Levels</label>
+                                <input type="number" class="form-control" name="passedlevels" value="0" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Purchased Levels</label>
+                                <input type="number" class="form-control" name="purchasedlevels" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Available Points</label>
+                                <input type="number" class="form-control" name="available_points" value="0" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Total Points</label>
+                                <input type="number" class="form-control" name="total_points" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="is_admin" id="isAdmin">
+                            <label class="form-check-label" for="isAdmin">Admin User</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="is_active" id="isActive" checked>
+                            <label class="form-check-label" for="isActive">Active User</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createUser()">Create User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" name="id" id="editUserId">
+                        <div class="mb-3">
+                            <label class="form-label">User Code</label>
+                            <input type="text" class="form-control" name="user_code" id="editUserCode" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Username *</label>
+                            <input type="text" class="form-control" name="username" id="editUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone *</label>
+                            <input type="tel" class="form-control" name="phone" id="editPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email (Optional)</label>
+                            <input type="email" class="form-control" name="email" id="editEmail">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">New Password</label>
+                            <input type="password" class="form-control" name="password">
+                            <small class="text-muted">Leave empty to keep current password</small>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Current Level</label>
+                                <input type="number" class="form-control" name="current_level" id="editCurrentLevel" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Coins</label>
+                                <input type="number" class="form-control" name="coins" id="editCoins" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Experience</label>
+                                <input type="number" class="form-control" name="experience" id="editExperience" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Play Time (seconds)</label>
+                                <input type="number" class="form-control" name="total_play_time" id="editPlayTime" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Passed Levels</label>
+                                <input type="number" class="form-control" name="passedlevels" id="editPassedLevels" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Purchased Levels</label>
+                                <input type="number" class="form-control" name="purchasedlevels" id="editPurchasedLevels" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Available Points</label>
+                                <input type="number" class="form-control" name="available_points" id="editAvailablePoints" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Total Points</label>
+                                <input type="number" class="form-control" name="total_points" id="editTotalPoints" min="0">
+                            </div>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="is_admin" id="editIsAdmin">
+                            <label class="form-check-label" for="editIsAdmin">Admin User</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="is_active" id="editIsActive">
+                            <label class="form-check-label" for="editIsActive">Active User</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updateUser()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let allUsers = [];
+        
+        // Helper function to make authenticated fetch requests
+        // Cookie будет отправлен автоматически браузером (credentials: 'include')
+        async function authenticatedFetch(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    credentials: 'include', // Важно: отправляет cookies автоматически
+                    headers: {
+                        ...options.headers
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        console.error('Unauthorized (401), redirecting to login');
+                        setTimeout(() => {
+                            window.location.href = '/admin/login';
+                        }, 2000);
+                        return null;
+                    }
+                    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+                }
+                
+                return response;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+                    setTimeout(() => {
+                        window.location.href = '/admin/login';
+                    }, 2000);
+                }
+                throw error;
+            }
+        }
+        
+        // Load users data
+        async function loadUsers(page = 1) {
+            try {
+                const response = await authenticatedFetch('/admin/users');
+                if (!response) {
+                    // authenticatedFetch уже обработал ошибку
+                    return;
+                }
+                allUsers = await response.json();
+                currentPage = page;
+                displayUsers();
+                updatePagination();
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                document.getElementById('usersTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="12" class="text-center text-danger">
+                            Failed to load users. Please try again.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // Display users with pagination and filtering
+        function displayUsers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            // Filter users
+            let filteredUsers = allUsers.filter(user => {
+                // Search filter
+                const matchesSearch = searchTerm === '' || 
+                    user.user_code.toLowerCase().includes(searchTerm) ||
+                    user.username.toLowerCase().includes(searchTerm) ||
+                    (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                    (user.phone && user.phone.includes(searchTerm));
+                
+                // Status filter
+                let matchesStatus = true;
+                if (statusFilter === 'active') {
+                    matchesStatus = user.is_active;
+                } else if (statusFilter === 'inactive') {
+                    matchesStatus = !user.is_active;
+                } else if (statusFilter === 'admin') {
+                    matchesStatus = user.is_admin;
+                } else if (statusFilter === 'franchise') {
+                    matchesStatus = user.is_franchise_participant;
+                } else if (statusFilter === 'player') {
+                    matchesStatus = !user.is_admin && !user.is_franchise_participant;
+                }
+                
+                return matchesSearch && matchesStatus;
+            });
+            
+            // Pagination
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageUsers = filteredUsers.slice(startIndex, endIndex);
+            
+            // Update table
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+            
+            if (pageUsers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="12" class="text-center text-muted">
+                            No users found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            pageUsers.forEach(user => {
+                const row = document.createElement('tr');
+                
+                // Format dates
+                const createdDate = new Date(user.created_at).toLocaleDateString();
+                const lastLogin = user.last_login ? 
+                    new Date(user.last_login).toLocaleDateString() : 'Never';
+                
+                // Create status badges
+                let statusBadges = '';
+                if (user.is_admin) {
+                    statusBadges += '<span class="badge badge-admin badge-status me-1">Admin</span>';
+                } else if (user.is_franchise_participant) {
+                    statusBadges += '<span class="badge bg-info badge-status me-1">Franchise</span>';
+                    if (user.is_approved) {
+                        statusBadges += '<span class="badge bg-success badge-status me-1">Approved</span>';
+                    } else {
+                        statusBadges += '<span class="badge bg-warning badge-status me-1">Pending</span>';
+                    }
+                } else {
+                    statusBadges += '<span class="badge bg-secondary badge-status me-1">Player</span>';
+                }
+                if (user.is_active) {
+                    statusBadges += '<span class="badge badge-active badge-status">Active</span>';
+                } else {
+                    statusBadges += '<span class="badge badge-inactive badge-status">Inactive</span>';
+                }
+                
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td><strong>${user.user_code}</strong></td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-2" style="width: 30px; height: 30px; font-size: 0.8rem;">
+                                ${user.username[0]}
+                            </div>
+                            <span>${user.username}</span>
+                        </div>
+                    </td>
+                    <td>${user.email || '-'}</td>
+                    <td>${user.phone || '-'}</td>
+                    <td>${statusBadges}</td>
+                    <td>
+                        <small>Level: <strong>${user.current_level || 0}</strong></small><br>
+                        <small>Coins: <strong>${user.coins || 0}</strong></small><br>
+                        <small>XP: <strong>${user.experience || 0}</strong></small>
+                    </td>
+                    <td>
+                        <small>Passed: <strong>${user.passedlevels}</strong></small><br>
+                        <small>Purchased: <strong>${user.purchasedlevels}</strong></small>
+                    </td>
+                    <td>
+                        <small>Available: <strong>${user.available_points}</strong></small><br>
+                        <small>Total: <strong>${user.total_points}</strong></small>
+                    </td>
+                    <td><small>${createdDate}</small></td>
+                    <td><small>${lastLogin}</small></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editUser(${user.id})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${user.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning" onclick="resetUser(${user.id})">
+                                <i class="bi bi-key"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Update user count
+            document.getElementById('userCount').textContent = 
+                `Showing ${startIndex + 1}-${Math.min(endIndex, filteredUsers.length)} of ${filteredUsers.length} users`;
+        }
+        
+        // Update pagination controls
+        function updatePagination() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            let filteredUsers = allUsers.filter(user => {
+                const matchesSearch = searchTerm === '' || 
+                    user.user_code.toLowerCase().includes(searchTerm) ||
+                    user.username.toLowerCase().includes(searchTerm);
+                
+                let matchesStatus = true;
+                if (statusFilter === 'active') {
+                    matchesStatus = user.is_active;
+                } else if (statusFilter === 'inactive') {
+                    matchesStatus = !user.is_active;
+                } else if (statusFilter === 'admin') {
+                    matchesStatus = user.is_admin;
+                } else if (statusFilter === 'franchise') {
+                    matchesStatus = user.is_franchise_participant;
+                } else if (statusFilter === 'player') {
+                    matchesStatus = !user.is_admin && !user.is_franchise_participant;
+                }
+                
+                return matchesSearch && matchesStatus;
+            });
+            
+            const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            // Previous button
+            const prevItem = document.createElement('li');
+            prevItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a>`;
+            pagination.appendChild(prevItem);
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item ${currentPage === i ? 'active' : ''}`;
+                pageItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+                pagination.appendChild(pageItem);
+            }
+            
+            // Next button
+            const nextItem = document.createElement('li');
+            nextItem.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a>`;
+            pagination.appendChild(nextItem);
+        }
+        
+        // Change page
+        function changePage(page) {
+            if (page < 1 || page > Math.ceil(allUsers.length / itemsPerPage)) return;
+            currentPage = page;
+            displayUsers();
+            updatePagination();
+        }
+        
+        // Refresh users
+        function refreshUsers() {
+            loadUsers(currentPage);
+        }
+        
+        // Helper: нормализует FormData в JSON для админских эндпоинтов:
+        //   - чекбоксы (is_admin / is_active) -> bool
+        //   - числовые поля -> Number
+        //   - пустые опциональные строки -> убираются
+        function normalizeUserFormData(form) {
+            const intFields = [
+                'current_level', 'coins', 'experience', 'total_play_time',
+                'passedlevels', 'purchasedlevels', 'available_points', 'total_points'
+            ];
+            const boolFields = ['is_admin', 'is_active'];
+            const fd = new FormData(form);
+            const obj = Object.fromEntries(fd);
+            for (const b of boolFields) {
+                obj[b] = !!fd.get(b);
+            }
+            for (const i of intFields) {
+                if (obj[i] === '' || obj[i] === undefined || obj[i] === null) {
+                    delete obj[i];
+                } else {
+                    obj[i] = Number(obj[i]);
+                }
+            }
+            for (const k of ['email', 'phone', 'password']) {
+                if (obj[k] === '') delete obj[k];
+            }
+            return obj;
+        }
+
+        // Create new user
+        async function createUser() {
+            const form = document.getElementById('createUserForm');
+            const payload = normalizeUserFormData(form);
+
+            try {
+                const response = await authenticatedFetch('/admin/users/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response) {
+                    return;
+                }
+                
+                if (response.ok) {
+                    alert('User created successfully!');
+                    $('#createUserModal').modal('hide');
+                    form.reset();
+                    loadUsers();
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to create user: ${error.detail}`);
+                }
+            } catch (error) {
+                alert('Failed to create user. Please try again.');
+            }
+        }
+        
+        // Edit user
+        function editUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editUserCode').value = user.user_code;
+            document.getElementById('editUsername').value = user.username;
+            document.getElementById('editEmail').value = user.email || '';
+            document.getElementById('editPhone').value = user.phone || '';
+            document.getElementById('editCurrentLevel').value = user.current_level || 0;
+            document.getElementById('editCoins').value = user.coins || 0;
+            document.getElementById('editExperience').value = user.experience || 0;
+            document.getElementById('editPlayTime').value = user.total_play_time || 0;
+            document.getElementById('editPassedLevels').value = user.passedlevels;
+            document.getElementById('editPurchasedLevels').value = user.purchasedlevels;
+            document.getElementById('editAvailablePoints').value = user.available_points;
+            document.getElementById('editTotalPoints').value = user.total_points;
+            document.getElementById('editIsAdmin').checked = user.is_admin;
+            document.getElementById('editIsActive').checked = user.is_active;
+            
+            $('#editUserModal').modal('show');
+        }
+        
+        // Update user
+        async function updateUser() {
+            const form = document.getElementById('editUserForm');
+            const payload = normalizeUserFormData(form);
+            const userId = document.getElementById('editUserId').value;
+
+            try {
+                const response = await authenticatedFetch(`/admin/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response) {
+                    return;
+                }
+                
+                if (response.ok) {
+                    alert('User updated successfully!');
+                    $('#editUserModal').modal('hide');
+                    loadUsers();
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to update user: ${error.detail}`);
+                }
+            } catch (error) {
+                alert('Failed to update user. Please try again.');
+            }
+        }
+        
+        // Delete user
+        async function deleteUser(userId) {
+            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const response = await authenticatedFetch(`/admin/users/${userId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response) {
+                    return;
+                }
+                
+                if (response.ok) {
+                    alert('User deleted successfully!');
+                    loadUsers();
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to delete user: ${error.detail}`);
+                }
+            } catch (error) {
+                alert('Failed to delete user. Please try again.');
+            }
+        }
+        
+        // Reset user password
+        async function resetUser(userId) {
+            if (!confirm('Reset this user\'s password? They will receive a new code-only access.')) {
+                return;
+            }
+            
+            try {
+                const response = await authenticatedFetch(`/admin/users/${userId}/reset`, {
+                    method: 'POST'
+                });
+                
+                if (!response) {
+                    return;
+                }
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`Password reset! New code: ${data.new_code}`);
+                    loadUsers();
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to reset password: ${error.detail}`);
+                }
+            } catch (error) {
+                alert('Failed to reset password. Please try again.');
+            }
+        }
+        
+        // Search and filter
+        document.getElementById('searchInput').addEventListener('input', () => {
+            currentPage = 1;
+            displayUsers();
+            updatePagination();
+        });
+        
+        document.getElementById('statusFilter').addEventListener('change', () => {
+            currentPage = 1;
+            displayUsers();
+            updatePagination();
+        });
+        
+        // Logout function
+        function logout() {
+            document.cookie = "admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/admin/login";
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsers();
+        });
+    </script>
+</body>
+</html>

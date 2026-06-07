@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchise Dashboard - Game Auth System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, #4361ee, #3a0ca3);
+            min-height: 100vh;
+            color: white;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            margin: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4361ee;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .badge-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .badge-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar d-md-block">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold">Game Auth</h3>
+                        <p class="text-light opacity-75">Franchise Panel</p>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/franchise/dashboard">
+                                <i class="bi bi-people me-2"></i>
+                                Players
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <a class="nav-link text-danger" href="#" onclick="logout()">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto px-0">
+                <!-- Header -->
+                <div class="header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold mb-0">Players Management</h4>
+                            <p class="text-muted mb-0">Manage your players</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-2">
+                                {{ user.username[0] }}
+                            </div>
+                            <div>
+                                <strong>{{ user.username }}</strong>
+                                <div class="small text-muted">Franchise Participant</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controls -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="d-flex gap-2">
+                            <input type="text" class="form-control" 
+                                   placeholder="Search players..." id="searchInput">
+                            <button class="btn btn-primary" onclick="refreshPlayers()">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createPlayerModal">
+                            <i class="bi bi-plus-circle me-2"></i>Add New Player
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Players Table -->
+                <div class="table-container">
+                    <table class="table table-hover" id="playersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User Code</th>
+                                <th>Username</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Level</th>
+                                <th>Coins</th>
+                                <th>Experience</th>
+                                <th>Play Time</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="playersTableBody">
+                            <!-- Players loaded via JavaScript -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted" id="playerCount">Loading...</div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0" id="pagination">
+                                <!-- Pagination loaded via JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create Player Modal -->
+    <div class="modal fade" id="createPlayerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Player</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createPlayerForm">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name (FIO) *</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" name="phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email (Optional)</label>
+                            <input type="email" class="form-control" name="email">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Current Level</label>
+                                <input type="number" class="form-control" name="current_level" value="0" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Coins</label>
+                                <input type="number" class="form-control" name="coins" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Experience</label>
+                                <input type="number" class="form-control" name="experience" value="0" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Play Time (seconds)</label>
+                                <input type="number" class="form-control" name="total_play_time" value="0" min="0">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createPlayer()">Add Player</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Player Modal -->
+    <div class="modal fade" id="editPlayerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Player</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPlayerForm">
+                        <input type="hidden" name="id" id="editPlayerId">
+                        <div class="mb-3">
+                            <label class="form-label">User Code</label>
+                            <input type="text" class="form-control" name="user_code" id="editUserCode" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name (FIO) *</label>
+                            <input type="text" class="form-control" name="username" id="editUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" name="phone" id="editPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" id="editEmail">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Current Level</label>
+                                <input type="number" class="form-control" name="current_level" id="editCurrentLevel" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Coins</label>
+                                <input type="number" class="form-control" name="coins" id="editCoins" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Experience</label>
+                                <input type="number" class="form-control" name="experience" id="editExperience" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Play Time (seconds)</label>
+                                <input type="number" class="form-control" name="total_play_time" id="editPlayTime" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Passed Levels</label>
+                                <input type="number" class="form-control" name="passedlevels" id="editPassedLevels" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Purchased Levels</label>
+                                <input type="number" class="form-control" name="purchasedlevels" id="editPurchasedLevels" min="0">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updatePlayer()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let allPlayers = [];
+        
+        // Helper function to get auth token from cookies
+        function getAuthToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'admin_token') {
+                    return value;
+                }
+            }
+            return null;
+        }
+        
+        // Helper function to make authenticated fetch requests
+        async function authenticatedFetch(url, options = {}) {
+            const token = getAuthToken();
+            if (!token) {
+                window.location.href = '/admin/login';
+                return;
+            }
+            
+            const headers = {
+                'Authorization': `Bearer ${token}`,
+                ...options.headers
+            };
+            
+            return fetch(url, {
+                ...options,
+                headers: headers
+            });
+        }
+        
+        // Load players data
+        async function loadPlayers(page = 1) {
+            try {
+                const response = await authenticatedFetch('/franchise/users');
+                if (!response || !response.ok) {
+                    if (response && response.status === 401) {
+                        window.location.href = '/admin/login';
+                        return;
+                    }
+                    throw new Error('Failed to load players');
+                }
+                allPlayers = await response.json();
+                currentPage = page;
+                displayPlayers();
+                updatePagination();
+            } catch (error) {
+                console.error('Failed to load players:', error);
+                document.getElementById('playersTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="11" class="text-center text-danger">
+                            Failed to load players. Please try again.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // Display players with pagination and filtering
+        function displayPlayers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Filter players
+            let filteredPlayers = allPlayers.filter(player => {
+                const matchesSearch = searchTerm === '' || 
+                    player.user_code.toLowerCase().includes(searchTerm) ||
+                    player.username.toLowerCase().includes(searchTerm) ||
+                    (player.phone && player.phone.includes(searchTerm));
+                
+                return matchesSearch;
+            });
+            
+            // Pagination
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pagePlayers = filteredPlayers.slice(startIndex, endIndex);
+            
+            // Update table
+            const tbody = document.getElementById('playersTableBody');
+            tbody.innerHTML = '';
+            
+            if (pagePlayers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11" class="text-center text-muted">
+                            No players found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            pagePlayers.forEach(player => {
+                const row = document.createElement('tr');
+                
+                // Format dates
+                const createdDate = new Date(player.created_at).toLocaleDateString();
+                
+                // Format play time
+                const hours = Math.floor(player.total_play_time / 3600);
+                const minutes = Math.floor((player.total_play_time % 3600) / 60);
+                const playTimeStr = `${hours}h ${minutes}m`;
+                
+                // Create status badge
+                const statusBadge = player.is_active ? 
+                    '<span class="badge badge-active badge-status">Active</span>' :
+                    '<span class="badge badge-inactive badge-status">Inactive</span>';
+                
+                row.innerHTML = `
+                    <td>${player.id}</td>
+                    <td><strong>${player.user_code}</strong></td>
+                    <td>${player.username}</td>
+                    <td>${player.phone || '-'}</td>
+                    <td>${statusBadge}</td>
+                    <td>${player.current_level}</td>
+                    <td>${player.coins}</td>
+                    <td>${player.experience}</td>
+                    <td><small>${playTimeStr}</small></td>
+                    <td><small>${createdDate}</small></td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editPlayer(${player.id})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deletePlayer(${player.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Update player count
+            document.getElementById('playerCount').textContent = 
+                `Showing ${startIndex + 1}-${Math.min(endIndex, filteredPlayers.length)} of ${filteredPlayers.length} players`;
+        }
+        
+        // Update pagination controls
+        function updatePagination() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filteredPlayers = allPlayers.filter(player => {
+                const matchesSearch = searchTerm === '' || 
+                    player.user_code.toLowerCase().includes(searchTerm) ||
+                    player.username.toLowerCase().includes(searchTerm);
+                
+                return matchesSearch;
+            });
+            
+            const totalPages = Math.ceil(filteredPlayers.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            // Previous button
+            const prevItem = document.createElement('li');
+            prevItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a>`;
+            pagination.appendChild(prevItem);
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item ${currentPage === i ? 'active' : ''}`;
+                pageItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+                pagination.appendChild(pageItem);
+            }
+            
+            // Next button
+            const nextItem = document.createElement('li');
+            nextItem.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a>`;
+            pagination.appendChild(nextItem);
+        }
+        
+        // Change page
+        function changePage(page) {
+            if (page < 1 || page > Math.ceil(allPlayers.length / itemsPerPage)) return;
+            currentPage = page;
+            displayPlayers();
+            updatePagination();
+        }
+        
+        // Refresh players
+        function refreshPlayers() {
+            loadPlayers(currentPage);
+        }
+        
+        // Create new player
+        async function createPlayer() {
+            const form = document.getElementById('createPlayerForm');
+            const formData = new FormData(form);
+            
+            const playerData = {
+                username: formData.get('username'),
+                phone: formData.get('phone'),
+                email: formData.get('email') || null,
+                current_level: parseInt(formData.get('current_level')) || 0,
+                coins: parseInt(formData.get('coins')) || 0,
+                experience: parseInt(formData.get('experience')) || 0,
+                total_play_time: parseInt(formData.get('total_play_time')) || 0
+            };
+            
+            try {
+                const response = await authenticatedFetch('/franchise/users/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(playerData)
+                });
+                
+                if (response && response.ok) {
+                    alert('Player created successfully!');
+                    $('#createPlayerModal').modal('hide');
+                    form.reset();
+                    loadPlayers();
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to create player: ${error.detail}`);
+                }
+            } catch (error) {
+                alert('Failed to create player. Please try again.');
+            }
+        }
+        
+        // Edit player
+        function editPlayer(playerId) {
+            const player = allPlayers.find(p => p.id === playerId);
+            if (!player) return;
+            
+            document.getElementById('editPlayerId').value = player.id;
+            document.getElementById('editUserCode').value = player.user_code;
+            document.getElementById('editUsername').value = player.username;
+            document.getElementById('editPhone').value = player.phone || '';
+            document.getElementById('editEmail').value = player.email || '';
+            document.getElementById('editCurrentLevel').value = player.current_level;
+            document.getElementById('editCoins').value = player.coins;
+            document.getElementById('editExperience').value = player.experience;
+            document.getElementById('editPlayTime').value = player.total_play_time;
+            document.getElementById('editPassedLevels').value = player.passedlevels;
+            document.getElementById('editPurchasedLevels').value = player.purchasedlevels;
+            
+            $('#editPlayerModal').modal('show');
+        }
+        
+        // Update player
+        async function updatePlayer() {
+            const form = document.getElementById('editPlayerForm');
+            const formData = new FormData(form);
+            const playerId = document.getElementById('editPlayerId').value;
+            
+            const playerData = {
+                current_level: parseInt(formData.get('current_level')) || 0,
+                coins: parseInt(formData.get('coins')) || 0,
+                experience: parseInt(formData.get('experience')) || 0,
+                total_play_time: parseInt(formData.get('total_play_time')) || 0,
+                passedlevels: parseInt(formData.get('passedlevels')) || 0,
+                purchasedlevels: parseInt(formData.get('purchasedlevels')) || 0
+            };
+            
+            try {
+                const response = await authenticatedFetch(`/franchise/users/${playerId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(playerData)
+                });
+                
+                if (response && response.ok) {
+                    alert('Player updated successfully!');
+                    $('#editPlayerModal').modal('hide');
+                    loadPlayers();
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to update player: ${error.detail}`);
+                }
+            } catch (error) {
+                alert('Failed to update player. Please try again.');
+            }
+        }
+        
+        // Delete player
+        async function deletePlayer(playerId) {
+            if (!confirm('Are you sure you want to deactivate this player?')) {
+                return;
+            }
+            
+            try {
+                const response = await authenticatedFetch(`/franchise/users/${playerId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response && response.ok) {
+                    alert('Player deactivated successfully!');
+                    loadPlayers();
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to deactivate player: ${error.detail}`);
+                }
+            } catch (error) {
+                alert('Failed to deactivate player. Please try again.');
+            }
+        }
+        
+        // Search and filter
+        document.getElementById('searchInput').addEventListener('input', () => {
+            currentPage = 1;
+            displayPlayers();
+            updatePagination();
+        });
+        
+        // Logout function
+        function logout() {
+            document.cookie = "admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/admin/login";
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPlayers();
+        });
+    </script>
+</body>
+</html>
+

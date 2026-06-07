@@ -1,0 +1,242 @@
+2026-05-20 19:42:49,621 - main - INFO - Database migration completed
+2026-05-20 19:48:00,767 - main - INFO - Database migration completed
+2026-05-20 19:48:44,833 - main - INFO - Database migration completed
+2026-05-20 19:49:28,859 - main - WARNING - Login attempt with non-existent username: admin@example.com
+2026-05-20 19:49:37,419 - main - WARNING - Login attempt with non-existent username: admin@example.com
+2026-05-20 19:49:39,828 - main - WARNING - Login attempt with non-existent username: admin@example.com
+2026-05-20 19:55:58,991 - main - INFO - Database migration completed
+2026-05-20 19:56:00,874 - main - INFO - Database migration completed
+2026-05-20 19:56:10,814 - main - INFO - Cookie set: admin_token (length: 119)
+2026-05-20 19:56:10,832 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-05-20 20:06:37,494 - main - INFO - Database migration completed
+2026-05-20 20:06:55,493 - main - INFO - Cookie set: admin_token (length: 119)
+2026-05-20 20:06:55,509 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-05-20 20:08:12,957 - main - INFO - Database migration completed
+2026-05-20 20:08:20,226 - main - INFO - Cookie set: admin_token (length: 119)
+2026-05-20 20:08:20,245 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-05-20 20:18:10,952 - main - INFO - Database migration completed
+2026-05-20 20:18:26,872 - main - INFO - Cookie set: admin_token (length: 119)
+2026-05-20 20:18:26,889 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-05-20 20:18:54,371 - main - INFO - Database migration completed
+2026-05-21 04:56:10,561 - main - INFO - Database migration completed
+2026-05-21 04:56:27,814 - main - INFO - Cookie set: admin_token (length: 119)
+2026-05-21 04:56:27,829 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-05-21 04:56:29,069 - main - INFO - /admin/users -> returning 2 users
+2026-05-21 04:57:09,566 - main - INFO - Admin ADMN01 updated user TEST01
+2026-05-21 04:57:11,155 - main - INFO - /admin/users -> returning 2 users
+2026-05-21 04:57:38,504 - main - INFO - Admin ADMN01 created user BC2967
+2026-05-21 04:57:39,719 - main - INFO - /admin/users -> returning 3 users
+2026-05-21 04:57:47,632 - main - INFO - /admin/users -> returning 3 users
+2026-05-21 04:59:39,347 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 04:59:39,393 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 04:59:39,394 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 04:59:39,429 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 05:00:04,999 - main - INFO - /admin/users -> returning 3 users
+2026-05-21 05:11:53,908 - main - INFO - Database migration completed
+2026-05-21 05:11:58,803 - main - INFO - Cookie set: admin_token (length: 119)
+2026-05-21 05:11:58,823 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-05-21 05:12:06,598 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 05:12:06,643 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 05:12:06,644 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 05:12:06,678 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 05:19:43,024 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 05:19:43,059 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 05:19:43,061 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 05:19:43,088 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 05:46:52,019 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 05:46:52,057 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 05:46:52,058 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 05:46:52,095 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 05:59:00,877 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 05:59:00,918 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 05:59:00,919 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 05:59:00,945 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 12:30:08,621 - main - INFO - /admin/users -> returning 3 users
+2026-05-21 12:31:17,599 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 12:31:17,652 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 12:31:17,653 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 12:31:17,689 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 13:15:43,971 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 13:15:44,045 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 13:15:44,047 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 13:15:44,079 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 13:24:31,682 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 13:24:31,729 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 13:24:31,730 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 13:24:31,763 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 18:29:23,404 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 18:29:23,590 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 18:29:23,596 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 18:29:23,632 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 18:46:25,453 - main - WARNING - No admin_token cookie found
+2026-05-21 18:46:27,155 - main - INFO - Cookie set: admin_token (length: 119)
+2026-05-21 18:46:27,178 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-05-21 18:46:42,534 - main - INFO - /admin/users -> returning 3 users
+2026-05-21 18:52:02,187 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 18:52:02,241 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-21 18:52:02,242 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-21 18:52:02,281 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-22 06:12:24,510 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-05-22 06:12:24,691 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-05-22 06:12:24,696 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-05-22 06:12:24,735 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-05-22 09:05:20,025 - main - INFO - Database migration completed
+2026-05-22 09:10:04,107 - main - INFO - Cookie set: admin_token (length: 119)
+2026-05-22 09:10:04,135 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-05-22 09:10:23,044 - main - INFO - /admin/users -> returning 3 users
+2026-05-22 09:10:52,177 - main - INFO - /admin/users -> returning 3 users
+2026-05-22 09:11:01,298 - main - INFO - /admin/users -> returning 3 users
+2026-05-22 09:25:03,085 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-22 09:25:03,362 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-05-22 09:25:03,370 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-05-22 09:25:03,495 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-01 17:41:09,865 - main - INFO - Database migration completed
+2026-06-01 17:41:14,060 - main - INFO - Cookie set: admin_token (length: 119)
+2026-06-01 17:41:14,078 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-06-01 17:41:21,037 - main - INFO - /admin/users -> returning 3 users
+2026-06-01 17:41:34,897 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-06-01 17:41:34,953 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-01 17:41:34,955 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-06-01 17:41:35,000 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-03 15:18:01,680 - main - INFO - Database migration completed
+2026-06-03 15:18:04,429 - main - INFO - Cookie set: admin_token (length: 119)
+2026-06-03 15:18:04,446 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-06-03 15:18:06,867 - main - INFO - /admin/users -> returning 3 users
+2026-06-03 15:18:32,939 - main - INFO - Admin ADMN01 updated user BC2967
+2026-06-03 15:18:34,612 - main - INFO - /admin/users -> returning 3 users
+2026-06-04 13:37:04,025 - main - INFO - Database migration completed
+2026-06-04 13:40:53,017 - main - INFO - Cookie set: admin_token (length: 119)
+2026-06-04 13:40:53,036 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-06-04 13:40:54,400 - main - INFO - /admin/users -> returning 3 users
+2026-06-04 13:41:09,399 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-06-04 13:41:09,442 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-04 13:41:42,315 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-06-04 13:41:42,363 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-04 13:41:42,365 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-06-04 13:41:42,394 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-04 13:45:41,193 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-06-04 13:45:41,240 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-04 13:45:41,241 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-06-04 13:45:41,285 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-04 14:05:03,295 - main - WARNING - Invalid password for user: ADMN01
+2026-06-04 14:05:12,556 - main - WARNING - Invalid password for user: ADMN01
+2026-06-04 14:05:16,891 - main - INFO - Cookie set: admin_token (length: 119)
+2026-06-04 14:05:16,909 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-06-04 14:08:03,896 - main - INFO - /admin/users -> returning 3 users
+2026-06-04 14:19:52,652 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-04 14:19:52,706 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-04 14:19:52,707 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-04 14:19:52,739 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-04 14:20:23,045 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-04 14:20:23,095 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-04 14:20:23,096 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-04 14:20:23,142 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-04 14:32:42,722 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-04 14:32:42,773 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-04 14:32:42,774 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-04 14:32:42,820 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-04 19:38:10,001 - main - INFO - Database migration completed
+2026-06-04 19:38:12,473 - main - INFO - Cookie set: admin_token (length: 119)
+2026-06-04 19:38:12,489 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-06-04 19:38:18,006 - main - INFO - /admin/users -> returning 3 users
+2026-06-05 07:50:53,348 - main - INFO - Database migration completed
+2026-06-05 07:52:37,879 - main - INFO - Cookie set: admin_token (length: 119)
+2026-06-05 07:52:37,911 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-06-05 07:53:13,733 - main - INFO - /admin/users -> returning 3 users
+2026-06-05 07:55:42,263 - main - INFO - /admin/users -> returning 3 users
+2026-06-05 14:29:22,763 - main - INFO - Database migration completed
+2026-06-05 14:29:27,094 - main - INFO - Cookie set: admin_token (length: 119)
+2026-06-05 14:29:27,111 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-06-05 14:29:30,187 - main - INFO - /admin/users -> returning 3 users
+2026-06-05 14:31:32,549 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-06-05 14:31:32,598 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-05 14:31:32,600 - main - INFO - Login attempt - Received code: 'BC2967', Normalized: 'BC2967', IP: 172.18.0.1
+2026-06-05 14:31:32,646 - main - INFO - User logged in: BC2967 from 172.18.0.1
+2026-06-05 22:54:23,560 - main - INFO - Cookie set: admin_token (length: 119)
+2026-06-05 22:54:23,604 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-06-05 22:54:25,985 - main - INFO - /admin/users -> returning 3 users
+2026-06-05 22:54:59,624 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:54:59,674 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 22:54:59,675 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:54:59,708 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 22:55:01,827 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:01,863 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 22:55:01,865 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:01,898 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 22:55:02,171 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:02,204 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 22:55:02,205 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:02,504 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:02,520 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:03,159 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:03,176 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:03,381 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:03,397 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:03,548 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:03,563 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:03,757 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:03,772 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:05,452 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:05,469 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:05,660 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:05,675 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:05,854 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:05,869 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:06,299 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:06,314 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:06,813 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:06,829 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:07,049 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:07,063 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:07,285 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:07,304 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:07,493 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:07,506 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:08,758 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:08,776 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:08,980 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:08,996 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:09,188 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:09,205 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:09,410 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:09,427 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:09,591 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:09,605 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:11,327 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:11,343 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:11,549 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:11,565 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:11,716 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:11,731 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:44,106 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:55:44,118 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:56:41,500 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 22:56:41,517 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:00:28,094 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:00:28,131 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 23:00:28,132 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:00:28,162 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 23:01:25,080 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:01:25,113 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 23:01:25,115 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:01:25,142 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 23:02:35,882 - main - INFO - Login attempt - Received code: 'TEST00', Normalized: 'TEST00', IP: 172.18.0.1
+2026-06-05 23:02:35,909 - main - WARNING - Login attempt with non-existent code: 'TEST00' (original: 'TEST00')
+2026-06-05 23:02:35,910 - main - WARNING - Available codes in DB (first 10): ['ADMN01 (admin, active=True)', 'TEST01 (Petya, active=True)', 'BC2967 (pepe, active=True)']
+2026-06-05 23:02:35,932 - main - INFO - Login attempt - Received code: 'TEST00', Normalized: 'TEST00', IP: 172.18.0.1
+2026-06-05 23:02:45,517 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:02:45,533 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:11:45,815 - main - INFO - Database migration completed
+2026-06-05 23:13:41,033 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:13:41,085 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 23:13:41,086 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:13:41,121 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 23:17:59,421 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:17:59,452 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 23:17:59,453 - main - INFO - Login attempt - Received code: 'TEST01', Normalized: 'TEST01', IP: 172.18.0.1
+2026-06-05 23:17:59,485 - main - INFO - User logged in: TEST01 from 172.18.0.1
+2026-06-05 23:33:50,870 - main - INFO - Database migration completed
+2026-06-05 23:33:53,533 - main - INFO - Cookie set: admin_token (length: 119)
+2026-06-05 23:33:53,549 - main - INFO - User ADMN01 logged in successfully, redirecting to /admin/dashboard
+2026-06-05 23:33:55,573 - main - INFO - /admin/users -> returning 3 users
+2026-06-06 00:00:49,505 - main - INFO - Database migration completed

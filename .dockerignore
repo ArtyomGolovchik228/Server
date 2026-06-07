@@ -1,0 +1,19 @@
+# Не тащим в образ ничего лишнего
+.env
+.git
+.gitignore
+.idea
+.vscode
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.sqlite3
+logs/
+data/
+admin_credentials.txt
+DOCKER_GUIDE.md
+README.md
+*.md

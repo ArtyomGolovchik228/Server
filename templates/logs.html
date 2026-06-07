@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs - Game Auth System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, #4361ee, #3a0ca3);
+            min-height: 100vh;
+            color: white;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            margin: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4361ee;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .filter-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .badge-success {
+            background-color: #4cc9f0;
+        }
+        
+        .badge-danger {
+            background-color: #f72585;
+        }
+        
+        .badge-warning {
+            background-color: #f8961e;
+        }
+        
+        .log-type-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .log-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .log-failed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .log-api {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-2xx { color: #198754; }
+        .status-3xx { color: #fd7e14; }
+        .status-4xx { color: #dc3545; }
+        .status-5xx { color: #6f42c1; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar d-md-block">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold">Game Auth</h3>
+                        <p class="text-light opacity-75">Admin Panel</p>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/users_management">
+                                <i class="bi bi-people me-2"></i>
+                                Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/logs">
+                                <i class="bi bi-journal-text me-2"></i>
+                                Logs
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <a class="nav-link text-danger" href="#" onclick="logout()">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto px-0">
+                <!-- Header -->
+                <div class="header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold mb-0">System Logs</h4>
+                            <p class="text-muted mb-0">Monitor all system activities</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-2">
+                                {{ user.username[0] }}
+                            </div>
+                            <div>
+                                <strong>{{ user.username }}</strong>
+                                <div class="small text-muted">Administrator</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabs -->
+                <ul class="nav nav-tabs mb-4" id="logsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" 
+                                data-bs-target="#login-logs" type="button" role="tab">
+                            <i class="bi bi-door-open me-1"></i> Login Logs
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="api-tab" data-bs-toggle="tab" 
+                                data-bs-target="#api-logs" type="button" role="tab">
+                            <i class="bi bi-code-slash me-1"></i> API Logs
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Tab Content -->
+                <div class="tab-content" id="logsTabsContent">
+                    <!-- Login Logs Tab -->
+                    <div class="tab-pane fade show active" id="login-logs" role="tabpanel">
+                        <div class="filter-card">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Date Range</label>
+                                    <input type="text" class="form-control date-range" 
+                                           placeholder="Select date range" id="loginDateRange">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="loginStatusFilter">
+                                        <option value="">All</option>
+                                        <option value="success">Success</option>
+                                        <option value="failed">Failed</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">User Code/Name</label>
+                                    <input type="text" class="form-control" 
+                                           placeholder="Search user..." id="loginUserFilter">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">IP Address</label>
+                                    <input type="text" class="form-control" 
+                                           placeholder="IP..." id="loginIpFilter">
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button class="btn btn-primary w-100" onclick="loadLoginLogs()">
+                                        <i class="bi bi-filter me-1"></i> Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="loginLogsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>User</th>
+                                            <th>IP Address</th>
+                                            <th>User Agent</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="loginLogsBody">
+                                        <!-- Data loaded via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="text-muted" id="loginLogsCount">Loading...</div>
+                                <nav>
+                                    <ul class="pagination pagination-sm mb-0" id="loginPagination">
+                                        <!-- Pagination loaded via JavaScript -->
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- API Logs Tab -->
+                    <div class="tab-pane fade" id="api-logs" role="tabpanel">
+                        <div class="filter-card">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Date Range</label>
+                                    <input type="text" class="form-control date-range" 
+                                           placeholder="Select date range" id="apiDateRange">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Method</label>
+                                    <select class="form-select" id="apiMethodFilter">
+                                        <option value="">All</option>
+                                        <option value="GET">GET</option>
+                                        <option value="POST">POST</option>
+                                        <option value="PUT">PUT</option>
+                                        <option value="DELETE">DELETE</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="apiStatusFilter">
+                                        <option value="">All</option>
+                                        <option value="2xx">2xx Success</option>
+                                        <option value="4xx">4xx Client Error</option>
+                                        <option value="5xx">5xx Server Error</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Endpoint/User</label>
+                                    <input type="text" class="form-control" 
+                                           placeholder="Search..." id="apiSearchFilter">
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button class="btn btn-primary w-100" onclick="loadApiLogs()">
+                                        <i class="bi bi-filter me-1"></i> Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="apiLogsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Endpoint</th>
+                                            <th>Method</th>
+                                            <th>User</th>
+                                            <th>IP</th>
+                                            <th>Status</th>
+                                            <th>Response Time</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="apiLogsBody">
+                                        <!-- Data loaded via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="text-muted" id="apiLogsCount">Loading...</div>
+                                <nav>
+                                    <ul class="pagination pagination-sm mb-0" id="apiPagination">
+                                        <!-- Pagination loaded via JavaScript -->
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Export Section -->
+                <div class="table-container mt-4">
+                    <h6>Export Logs</h6>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="text-muted small">
+                                Export logs for analysis or backup. Files are generated in CSV format.
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-success" onclick="exportLoginLogs()">
+                                    <i class="bi bi-download me-1"></i> Export Login Logs
+                                </button>
+                                <button class="btn btn-outline-primary" onclick="exportApiLogs()">
+                                    <i class="bi bi-download me-1"></i> Export API Logs
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Log Details Modal -->
+    <div class="modal fade" id="logDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Log Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="logDetailsContent">
+                    <!-- Details loaded via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    
+    <script>
+        // Global variables
+        let currentLoginPage = 1;
+        let currentApiPage = 1;
+        const logsPerPage = 20;
+        
+        // Helper function to make authenticated fetch requests
+        // Cookie будет отправлен автоматически браузером (credentials: 'include')
+        async function authenticatedFetch(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    credentials: 'include', // Важно: отправляет cookies автоматически
+                    headers: {
+                        ...options.headers
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        console.error('Unauthorized (401), redirecting to login');
+                        setTimeout(() => {
+                            window.location.href = '/admin/login';
+                        }, 2000);
+                        return null;
+                    }
+                    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+                }
+                
+                return response;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+                    setTimeout(() => {
+                        window.location.href = '/admin/login';
+                    }, 2000);
+                }
+                throw error;
+            }
+        }
+        
+        // Initialize date pickers
+        $(document).ready(function() {
+            $('.date-range').datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true,
+                todayHighlight: true
+            });
+            
+            // Load initial data
+            loadLoginLogs();
+        });
+        
+        // Load login logs
+        async function loadLoginLogs(page = 1) {
+            try {
+                const dateRange = $('#loginDateRange').val();
+                const status = $('#loginStatusFilter').val();
+                const userFilter = $('#loginUserFilter').val();
+                const ipFilter = $('#loginIpFilter').val();
+                
+                let url = `/admin/logs/login?skip=${(page - 1) * logsPerPage}&limit=${logsPerPage}`;
+                
+                // Apply filters
+                if (status) {
+                    url += `&success=${status === 'success'}`;
+                }
+                
+                const response = await authenticatedFetch(url);
+                if (!response) {
+                    // authenticatedFetch уже обработал ошибку
+                    return;
+                }
+                const logs = await response.json();
+                
+                displayLoginLogs(logs);
+                updateLoginPagination(page, logs.length);
+                
+            } catch (error) {
+                console.error('Failed to load login logs:', error);
+                document.getElementById('loginLogsBody').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-danger">
+                            Failed to load logs. Please try again.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // Display login logs
+        function displayLoginLogs(logs) {
+            const tbody = document.getElementById('loginLogsBody');
+            tbody.innerHTML = '';
+            
+            if (logs.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            No login logs found
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('loginLogsCount').textContent = 'Showing 0 logs';
+                return;
+            }
+            
+            logs.forEach(log => {
+                const time = new Date(log.attempt_time).toLocaleString();
+                const userAgent = log.user_agent || 'N/A';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <small class="text-muted">${time}</small>
+                    </td>
+                    <td>
+                        <div>
+                            <strong>${log.username}</strong><br>
+                            <small class="text-muted">${log.user_code}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">${log.ip_address}</span>
+                    </td>
+                    <td>
+                        <small class="text-truncate d-block" style="max-width: 200px;">
+                            ${userAgent}
+                        </small>
+                    </td>
+                    <td>
+                        <span class="log-type-badge ${log.success ? 'log-success' : 'log-failed'}">
+                            ${log.success ? 'Success' : 'Failed'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-info" onclick="showLogDetails(${JSON.stringify(log).replace(/"/g, '&quot;')})">
+                            <i class="bi bi-info-circle"></i> Details
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById('loginLogsCount').textContent = 
+                `Showing ${logs.length} login logs`;
+        }
+        
+        // Update login logs pagination
+        function updateLoginPagination(page, total) {
+            const totalPages = Math.ceil(total / logsPerPage);
+            const pagination = document.getElementById('loginPagination');
+            pagination.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // Previous button
+            const prevItem = document.createElement('li');
+            prevItem.className = `page-item ${page === 1 ? 'disabled' : ''}`;
+            prevItem.innerHTML = `<a class="page-link" href="#" onclick="loadLoginLogs(${page - 1})">Previous</a>`;
+            pagination.appendChild(prevItem);
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item ${page === i ? 'active' : ''}`;
+                pageItem.innerHTML = `<a class="page-link" href="#" onclick="loadLoginLogs(${i})">${i}</a>`;
+                pagination.appendChild(pageItem);
+            }
+            
+            // Next button
+            const nextItem = document.createElement('li');
+            nextItem.className = `page-item ${page === totalPages ? 'disabled' : ''}`;
+            nextItem.innerHTML = `<a class="page-link" href="#" onclick="loadLoginLogs(${page + 1})">Next</a>`;
+            pagination.appendChild(nextItem);
+        }
+        
+        // Load API logs
+        async function loadApiLogs(page = 1) {
+            try {
+                const dateRange = $('#apiDateRange').val();
+                const method = $('#apiMethodFilter').val();
+                const statusFilter = $('#apiStatusFilter').val();
+                const search = $('#apiSearchFilter').val();
+                
+                let url = `/admin/logs/api?skip=${(page - 1) * logsPerPage}&limit=${logsPerPage}`;
+                
+                if (search) {
+                    url += `&user_code=${search}`;
+                }
+                
+                const response = await authenticatedFetch(url);
+                if (!response) {
+                    // authenticatedFetch уже обработал ошибку
+                    return;
+                }
+                const logs = await response.json();
+                
+                // Apply client-side filters
+                let filteredLogs = logs;
+                if (method) {
+                    filteredLogs = filteredLogs.filter(log => log.method === method);
+                }
+                if (statusFilter) {
+                    if (statusFilter === '2xx') {
+                        filteredLogs = filteredLogs.filter(log => log.response_status >= 200 && log.response_status < 300);
+                    } else if (statusFilter === '4xx') {
+                        filteredLogs = filteredLogs.filter(log => log.response_status >= 400 && log.response_status < 500);
+                    } else if (statusFilter === '5xx') {
+                        filteredLogs = filteredLogs.filter(log => log.response_status >= 500);
+                    }
+                }
+                
+                displayApiLogs(filteredLogs);
+                updateApiPagination(page, filteredLogs.length);
+                
+            } catch (error) {
+                console.error('Failed to load API logs:', error);
+                document.getElementById('apiLogsBody').innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-danger">
+                            Failed to load logs. Please try again.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // Display API logs
+        function displayApiLogs(logs) {
+            const tbody = document.getElementById('apiLogsBody');
+            tbody.innerHTML = '';
+            
+            if (logs.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            No API logs found
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('apiLogsCount').textContent = 'Showing 0 logs';
+                return;
+            }
+            
+            logs.forEach(log => {
+                const time = new Date(log.created_at).toLocaleString();
+                const responseTime = log.response_time ? 
+                    `${(log.response_time * 1000).toFixed(0)}ms` : 'N/A';
+                
+                // Determine status color
+                let statusClass = '';
+                if (log.response_status >= 200 && log.response_status < 300) {
+                    statusClass = 'status-2xx';
+                } else if (log.response_status >= 300 && log.response_status < 400) {
+                    statusClass = 'status-3xx';
+                } else if (log.response_status >= 400 && log.response_status < 500) {
+                    statusClass = 'status-4xx';
+                } else if (log.response_status >= 500) {
+                    statusClass = 'status-5xx';
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <small class="text-muted">${time}</small>
+                    </td>
+                    <td>
+                        <small>${log.endpoint}</small>
+                    </td>
+                    <td>
+                        <span class="badge ${log.method === 'GET' ? 'bg-info' : 
+                                          log.method === 'POST' ? 'bg-success' :
+                                          log.method === 'PUT' ? 'bg-warning' : 'bg-danger'}">
+                            ${log.method}
+                        </span>
+                    </td>
+                    <td>
+                        ${log.username ? `
+                            <div>
+                                <strong>${log.username}</strong><br>
+                                <small class="text-muted">${log.user_code}</small>
+                            </div>
+                        ` : '<span class="text-muted">Anonymous</span>'}
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">${log.ip_address}</span>
+                    </td>
+                    <td>
+                        <span class="fw-bold ${statusClass}">${log.response_status}</span>
+                    </td>
+                    <td>
+                        <small>${responseTime}</small>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-info" onclick="showLogDetails(${JSON.stringify(log).replace(/"/g, '&quot;')}, 'api')">
+                            <i class="bi bi-info-circle"></i> Details
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById('apiLogsCount').textContent = 
+                `Showing ${logs.length} API logs`;
+        }
+        
+        // Update API logs pagination
+        function updateApiPagination(page, total) {
+            const totalPages = Math.ceil(total / logsPerPage);
+            const pagination = document.getElementById('apiPagination');
+            pagination.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // Previous button
+            const prevItem = document.createElement('li');
+            prevItem.className = `page-item ${page === 1 ? 'disabled' : ''}`;
+            prevItem.innerHTML = `<a class="page-link" href="#" onclick="loadApiLogs(${page - 1})">Previous</a>`;
+            pagination.appendChild(prevItem);
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item ${page === i ? 'active' : ''}`;
+                pageItem.innerHTML = `<a class="page-link" href="#" onclick="loadApiLogs(${i})">${i}</a>`;
+                pagination.appendChild(pageItem);
+            }
+            
+            // Next button
+            const nextItem = document.createElement('li');
+            nextItem.className = `page-item ${page === totalPages ? 'disabled' : ''}`;
+            nextItem.innerHTML = `<a class="page-link" href="#" onclick="loadApiLogs(${page + 1})">Next</a>`;
+            pagination.appendChild(nextItem);
+        }
+        
+        // Show log details
+        function showLogDetails(log, type = 'login') {
+            let detailsHtml = '';
+            
+            if (type === 'login') {
+                detailsHtml = `
+                    <h6>Login Attempt Details</h6>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p><strong>User:</strong> ${log.username} (${log.user_code})</p>
+                            <p><strong>Time:</strong> ${new Date(log.attempt_time).toLocaleString()}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="log-type-badge ${log.success ? 'log-success' : 'log-failed'}">
+                                    ${log.success ? 'Success' : 'Failed'}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>IP Address:</strong> ${log.ip_address}</p>
+                            <p><strong>User Agent:</strong></p>
+                            <div class="bg-light p-2 rounded">
+                                <small>${log.user_agent || 'N/A'}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                detailsHtml = `
+                    <h6>API Request Details</h6>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p><strong>Endpoint:</strong> ${log.endpoint}</p>
+                            <p><strong>Method:</strong> ${log.method}</p>
+                            <p><strong>Time:</strong> ${new Date(log.created_at).toLocaleString()}</p>
+                            <p><strong>Response Time:</strong> ${(log.response_time * 1000).toFixed(0)}ms</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>User:</strong> ${log.username ? log.username + ' (' + log.user_code + ')' : 'Anonymous'}</p>
+                            <p><strong>IP Address:</strong> ${log.ip_address}</p>
+                            <p><strong>Status Code:</strong> 
+                                <span class="fw-bold ${log.response_status >= 400 ? 'text-danger' : 'text-success'}">
+                                    ${log.response_status}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    ${log.user_agent ? `
+                    <div class="mt-3">
+                        <p><strong>User Agent:</strong></p>
+                        <div class="bg-light p-2 rounded">
+                            <small>${log.user_agent}</small>
+                        </div>
+                    </div>
+                    ` : ''}
+                `;
+            }
+            
+            document.getElementById('logDetailsContent').innerHTML = detailsHtml;
+            $('#logDetailsModal').modal('show');
+        }
+        
+        // Export login logs
+        function exportLoginLogs() {
+            const link = document.createElement('a');
+            link.href = '/admin/logs/login?limit=10000';
+            link.download = 'login_logs.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Export API logs
+        function exportApiLogs() {
+            const link = document.createElement('a');
+            link.href = '/admin/logs/api?limit=10000';
+            link.download = 'api_logs.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Logout function
+        function logout() {
+            document.cookie = "admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/admin/login";
+        }
+        
+        // Tab change handler
+        document.getElementById('api-tab').addEventListener('click', function() {
+            loadApiLogs();
+        });
+    </script>
+</body>
+</html>

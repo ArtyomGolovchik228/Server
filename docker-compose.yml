@@ -1,0 +1,62 @@
+# docker-compose для English VR Authorization Server
+# Запуск:    docker compose up -d --build
+# Логи:      docker compose logs -f api
+# Стоп:      docker compose down
+# Полный сброс (с удалением БД и Redis-данных):  docker compose down -v
+
+services:
+  api:
+    build: .
+    container_name: vrenglish-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Папка с SQLite-базой и админ-кредами — переживает перезапуски
+      - ./data:/app/data
+      # Логи сервера — пишутся прямо рядом с docker-compose
+      - ./logs:/app/logs
+    environment:
+      # БД лежит ВНУТРИ /app/data (которая примонтирована наружу) — это важно,
+      # иначе при пересборке контейнера база теряется
+      - DATABASE_URL=sqlite:///./data/game_auth.db
+      # Секрет для JWT (обязательно поменять в .env!)
+      - SECRET_KEY=${SECRET_KEY:?Set SECRET_KEY in .env}
+      # Redis-параметры — внутри докер-сети имя хоста = имя сервиса
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      # Прочие переменные подтянутся из .env автоматически (опционально)
+      - LOGIN_ATTEMPT_LIMIT=${LOGIN_ATTEMPT_LIMIT:-5}
+      - LOGIN_ATTEMPT_PERIOD=${LOGIN_ATTEMPT_PERIOD:-300}
+      - REQUEST_LIMIT=${REQUEST_LIMIT:-100}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      - API_TOKEN_EXPIRE_DAYS=${API_TOKEN_EXPIRE_DAYS:-30}
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  redis:
+    image: redis:7-alpine
+    container_name: vrenglish-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    # Порт наружу прокинут для отладки. В проде можно убрать — внутри сети
+    # сервис всё равно доступен под именем "redis".
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis_data:
