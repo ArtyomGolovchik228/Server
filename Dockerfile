@@ -1,5 +1,5 @@
 # --- Dockerfile для FastAPI сервера English VR Authorization ---
-FROM python:3.11-slim
+FROM python:3.11-alpine
 
 WORKDIR /app
 
@@ -8,13 +8,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
 
-# Системные пакеты, нужные для bcrypt/psycopg2 и healthcheck
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        build-essential \
-        libpq-dev \
-        curl \
-    && rm -rf /var/lib/apt/lists/*
+# Системные пакеты для bcrypt и curl
+RUN apk add --no-cache gcc musl-dev libffi-dev curl
 
 # Сначала зависимости (для кэша слоёв Docker)
 COPY requirements.txt .
